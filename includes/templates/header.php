@@ -30,6 +30,6 @@
                     </nav>
                 </div>
             </div><!--.barra-->
-            <?php // echo $inicio ? '<h3 class="titulo">asd</h3>' : '' ?>
+            <?php echo $inicio ? '<h3 class="titulo">Venta de Casas y Departamentos de Lujos</h3>' : '' ?>
         </div>
     </header><!--.header-->

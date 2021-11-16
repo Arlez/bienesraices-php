@@ -28,7 +28,7 @@
         $estacionamiento = mysqli_real_escape_string($db, $_POST['estacionamiento']);
         $vendedorId = mysqli_real_escape_string($db, $_POST['vendedor']);
         $creado = date('Y/m/d');
-        $imagen = $nombreImagen;
+        $imagen = $_FILES['imagen']['name'];
 
         //validacion de los campos
         if(!$titulo){$errores[] = 'Debes insertar un Titulo';}
@@ -62,7 +62,7 @@
 
             //query para insertar datos en la BD
             $query = "INSERT INTO propiedades (titulo, precio, imagen, descripcion, habitaciones, wc, estacionamiento, creado, vendedorId)";
-            $query.= "VALUES ('$titulo', '$precio', '$imagen', '$descripcion', '$habitaciones', '$wc', '$estacionamiento', '$creado', '$vendedorId')";
+            $query.= "VALUES ('$titulo', '$precio', '$nombreImagen', '$descripcion', '$habitaciones', '$wc', '$estacionamiento', '$creado', '$vendedorId')";
     
             //insertar en BD
             $resultado = mysqli_query($db, $query);

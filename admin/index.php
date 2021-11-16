@@ -14,12 +14,37 @@
 
     $resultado = $_GET['resultado'] ?? null;
 
+    if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $id = $_POST['id'];
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+
+        if($id){
+            //eliminar archivo
+            $query = "SELECT * FROM propiedades WHERE ID = ${id}";
+            $resultado = mysqli_query($db, $query);
+            $propiedad = mysqli_fetch_assoc($resultado);
+            unlink('../imagenes/'.$propiedad['imagen']);
+            //elimina propiedad
+            $query = "DELETE FROM propiedades WHERE id = ${id}";
+            $resultado = mysqli_query($db, $query);
+            //$resultado = true;
+
+            if($resultado){
+                header('Location: ../admin?resultado=3');
+            }
+        }
+    }
+
 ?>
 
 <main class="contenedor seccion">
     <h1>inicio admin</h1>
     <?php if($resultado == 1) :?>
-        <p class="alerta exito">Anuncio creado correctamente</p>
+        <p class="alerta exito">Anuncio Creado Correctamente</p>
+    <?php elseif($resultado == 2) :?>
+        <p class="alerta exito">Anuncio Actualizado Correctamente</p>
+    <?php elseif($resultado == 3) :?>
+        <p class="alerta exito">Anuncio Eliminado Correctamente</p>
     <?php endif;?>
 
     <a href="propiedades/crear.php" class="boton boton-verde">Nueva Propiedad</a>
@@ -42,7 +67,11 @@
                 <td> <img src="../imagenes/<?php echo $propiedad['imagen']; ?>" alt="" class="imagen-tabla"> </td>
                 <td> $<?php echo $propiedad['precio']; ?></td>
                 <td>
-                    <a href="#" class="boton-rojo d-block">Eliminar</a>
+                    <form method="POST">
+                        <input type="hidden" name="id" value="<?php echo $propiedad['id'];?>">
+                        <input type="submit" class="boton-rojo w-100" value="Eliminar">
+                    </form>
+
                     <a href="propiedades/actualizar.php?id=<?php echo $propiedad['id']; ?>" class="boton-amarillo d-block">Actualizar</a>
                 </td>
             </tr>

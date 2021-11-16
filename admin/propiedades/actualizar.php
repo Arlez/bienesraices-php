@@ -12,6 +12,7 @@
     //consultar propiedad actulizar
     $query_propiedad = "SELECT * FROM propiedades WHERE id = $id";
     $resultado_propiedad = mysqli_query($db, $query_propiedad);
+    $propiedad = mysqli_fetch_assoc($resultado_propiedad);
 
     //llamar vendedores desde BD
     $query_vendedores = "SELECT * FROM vendedores";
@@ -20,13 +21,14 @@
     //arreglo con errores
     $errores = [];
 
-    $titulo = '';
-    $precio = '';
-    $descripcion = '';
-    $habitaciones = '';
-    $wc = '';
-    $estacionamiento = '';
-    $vendedorId = '';
+    $titulo = $propiedad['titulo'];
+    $precio = $propiedad['precio'];
+    $descripcion = $propiedad['descripcion'];
+    $habitaciones = $propiedad['habitaciones'];
+    $wc = $propiedad['wc'];
+    $estacionamiento = $propiedad['estacionamiento'];
+    $vendedorId = $propiedad['vendedorId'];
+    $imagenPropiedad = $propiedad['imagen'];
 
     //enviar datos del formulario a la BD
     if( $_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -49,7 +51,6 @@
         if(!$wc){$errores[] = 'Debes insertar al menos un WC';}
         if(!$estacionamiento){$errores[] = 'Debes insertar al menos un Estacionamiento';}
         if(!$vendedorId|| $vendedorId === 0){$errores[] = 'Debes seleccionar un Vendedor';}
-        if(!$imagen || $_FILES['imagen']['error']){$errores[] = 'Debes insertar una imagen';}
 
         //validar tamaño de imagenes
         $medida = 1000 * 1000;
@@ -60,25 +61,38 @@
         //echo '</pre>';
         //revisar que el arreglo $errores esta vacia
         if(empty($errores)){
-            //sabida de archivos
-
+           
             //crear carpeta
             $carpetaImagenes = '../../imagenes';
             if(!is_dir($carpetaImagenes)){mkdir($carpetaImagenes);}
 
-            //generar nombre unico
-            $nombreImagen = md5(uniqid(rand(),true)).'.jpg';
+            $nombreImagen = '';
 
-            move_uploaded_file($_FILES['imagen']['tmp_name'], $carpetaImagenes.'/'.$nombreImagen);
+            //actualizar imagen
+            if($_FILES['imagen']['name']){
+                //eliminar imagen previa
+                unlink($carpetaImagenes.'/'.$propiedad['imagen']);
 
-            //query para insertar datos en la BD
-            $query = "INSERT INTO propiedades (titulo, precio, imagen, descripcion, habitaciones, wc, estacionamiento, creado, vendedorId)";
-            $query.= "VALUES ('$titulo', '$precio', '$imagen', '$descripcion', '$habitaciones', '$wc', '$estacionamiento', '$creado', '$vendedorId')";
+                //generar nombre unico
+                $nombreImagen = md5(uniqid(rand(),true)).'.jpg';
+
+                move_uploaded_file($_FILES['imagen']['tmp_name'], $carpetaImagenes.'/'.$nombreImagen);
+            }else{
+                $nombreImagen = $propiedad['imagen'];
+            }
+
+           
+
+
+
+            //query para actualizar datos en la BD
+            $query =    "UPDATE propiedades SET titulo='${titulo}', precio='${precio}', imagen = '${nombreImagen}', descripcion='${descripcion}', habitaciones=${habitaciones}, 
+                        wc=${wc}, estacionamiento=${estacionamiento}, vendedorId=${vendedorId} WHERE id = ${id}";
     
             //insertar en BD
             $resultado = mysqli_query($db, $query);
             //$resultado = true;
-            echo $resultado ? header('Location: ../../admin?resultado=1') : 'Hubo un error';  
+            echo $resultado ? header('Location: ../../admin?resultado=2') : 'Hubo un error';  
         }
     }
 
@@ -96,7 +110,7 @@
         </div>
     <?php } ?>
 
-    <form action="crear.php" class="formulario" method="POST" enctype="multipart/form-data">
+    <form class="formulario" method="POST" enctype="multipart/form-data">
         <fieldset>
             <legend>Información General</legend>
 
@@ -108,6 +122,8 @@
 
             <label for="imagen"> Imagen:</label>
             <input type="file" id="imagen" accept="image/jpeg, image/png" name="imagen">
+
+            <img src="../../imagenes/<?php echo $propiedad['imagen'];?>" alt="" class="imagen-small">
 
             <label for="descripcion"> Descripción:</label>
             <textarea name="descripcion" id="descripcion" cols="30" rows="10"> <?php echo $descripcion;?></textarea>
