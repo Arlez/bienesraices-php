@@ -28,7 +28,7 @@
         $estacionamiento = mysqli_real_escape_string($db, $_POST['estacionamiento']);
         $vendedorId = mysqli_real_escape_string($db, $_POST['vendedor']);
         $creado = date('Y/m/d');
-        $imagen = $_FILES['imagen']['name'];
+        $imagen = $nombreImagen;
 
         //validacion de los campos
         if(!$titulo){$errores[] = 'Debes insertar un Titulo';}
@@ -66,7 +66,8 @@
     
             //insertar en BD
             $resultado = mysqli_query($db, $query);
-            echo $resultado ? header('Location: ../') : 'Hubo un error';  
+            //$resultado = true;
+            echo $resultado ? header('Location: ../../admin?resultado=1') : 'Hubo un error';  
         }
     }
 
