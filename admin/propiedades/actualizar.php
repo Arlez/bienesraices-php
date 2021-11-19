@@ -1,6 +1,12 @@
 <?php
-    require '../../includes/config/db.php';
-    $db = conectarDB();
+    require '../../includes/funciones.php';
+    
+    //autenticar usuario
+    $auth = autenticar();
+    if(!$auth){
+        //redireccionar en caso de no estar autenticado
+        header('Location: /bienesraices/login.php');
+    }
 
     $id = $_GET['id'] ?? null;
     $id = filter_var($id, FILTER_VALIDATE_INT);
@@ -9,6 +15,8 @@
         header('Location: ../../admin');
     }
 
+    require '../../includes/config/db.php';
+    $db = conectarDB();
     //consultar propiedad actulizar
     $query_propiedad = "SELECT * FROM propiedades WHERE id = $id";
     $resultado_propiedad = mysqli_query($db, $query_propiedad);
@@ -96,7 +104,6 @@
         }
     }
 
-    require '../../includes/funciones.php';
     incluirTamplate('header');
 ?>
 

@@ -1,4 +1,13 @@
 <?php
+    require '../includes/funciones.php';
+
+    //autenticar usuario
+    $auth = autenticar();
+    if(!$auth){
+        //redireccionar en caso de no estar autenticado
+        header('Location: /bienesraices/login.php');
+    }
+
     //importar conexion
     require_once '../includes/config/db.php';
     $db = conectarDB();
@@ -9,7 +18,7 @@
     //consultar BD
     $consulta = mysqli_query($db, $query);
 
-    require '../includes/funciones.php';
+
     incluirTamplate('header');
 
     $resultado = $_GET['resultado'] ?? null;

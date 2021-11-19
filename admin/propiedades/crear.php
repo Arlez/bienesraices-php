@@ -1,4 +1,12 @@
 <?php
+    require '../../includes/funciones.php'; 
+    //autenticar usuario
+    $auth = autenticar();
+    if(!$auth){
+        //redireccionar en caso de no estar autenticado
+        header('Location: /bienesraices/login.php');
+    }
+
     require '../../includes/config/db.php';
     $db = conectarDB();
 
@@ -71,7 +79,6 @@
         }
     }
 
-    require '../../includes/funciones.php';
     incluirTamplate('header');
 ?>
 
