@@ -1,13 +1,12 @@
 <?php
-    require '../../includes/funciones.php'; 
-    //autenticar usuario
-    $auth = autenticar();
-    if(!$auth){
-        //redireccionar en caso de no estar autenticado
-        header('Location: /bienesraices/login.php');
-    }
+    require '../../includes/app.php'; 
 
-    require '../../includes/config/db.php';
+    use App\Propiedad;
+
+    //autenticar usuario
+    autenticar();
+  
+
     $db = conectarDB();
 
     //llamar vendedores desde BD

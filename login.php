@@ -1,6 +1,6 @@
 <?php
     //conexion BD
-    require 'includes/config/db.php';
+    require 'includes/app.php';
     $db = conectarDB();
 
     $errores = [];
@@ -45,7 +45,6 @@
         }
     }
     
-    require 'includes/funciones.php';
     incluirTamplate('header');
 ?>
     <main class="contenedor seccion contenido-centrado">

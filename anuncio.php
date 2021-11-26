@@ -1,5 +1,5 @@
 <?php
-    require 'includes/funciones.php';
+    require 'includes/app.php';
     incluirTamplate('header');
 
     //obtener el id por url
@@ -11,7 +11,6 @@
     }
 
     //conexion BD
-    require 'includes/config/db.php';
     $db = conectarDB();
 
     //consulta
